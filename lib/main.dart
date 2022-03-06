@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:groceryadmin/screens/login.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:groceryadmin/screens/validate.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      home: ValidateScreen(),
       theme: ThemeData(
           scaffoldBackgroundColor: Colors.white,
           primarySwatch: Colors.green,
