@@ -1,18 +1,39 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:groceryadmin/screens/tabs.dart';
 
 class LoginScreen extends StatelessWidget {
+  LoginScreen({Key? key}) : super(key: key);
+
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _pass = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  login() {
+    var email = (_email.text).trim().toLowerCase();
+    var pass = _pass.text;
+    _auth.signInWithEmailAndPassword(email: email, password: pass).then((res) {
+      Get.offAll(TabsScreen());
+    }).catchError((e) {
+      Get.showSnackbar(GetSnackBar(
+        duration: const Duration(seconds: 3),
+        message: "Login Error: ${e.toString()}",
+      ));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: Text("Login"),
+        title: const Text("Login"),
       ),
       body: SingleChildScrollView(
         child: Container(
           width: double.infinity,
-          padding: EdgeInsets.all(32.0),
+          padding: const EdgeInsets.all(32.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -24,11 +45,13 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               const Text(
-                "Sundar's shop",
+                "Grocery Admin",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 32),
               TextField(
+                keyboardType: TextInputType.emailAddress,
+                controller: _email,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.grey[200],
@@ -39,6 +62,7 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 16),
               TextField(
                 obscureText: true,
+                controller: _pass,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.grey[200],
@@ -52,9 +76,10 @@ class LoginScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
-                  child: Text("LOGIN"),
+                  child: const Text("LOGIN"),
                   onPressed: () {
-                    Get.offAll(TabsScreen());
+                    login();
+                    // Get.offAll(TabsScreen());
                   },
                 ),
               ),
