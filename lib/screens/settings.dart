@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:groceryadmin/screens/profile.dart';
 
 class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,16 +15,16 @@ class SettingsScreen extends StatelessWidget {
         child: ListView(
           children: [
             ListTile(
-              leading: CircleAvatar(
-                backgroundImage: AssetImage("assets/images/profile.png"),
+              leading: const CircleAvatar(
+                backgroundImage: AssetImage('assets/images/mike.png'),
               ),
-              title: Text("Sundar Shop"),
-              subtitle: Text("234, SF St, 312"),
+              title: const Text("Mikeruu Pogi"),
+              subtitle: const Text("1 Makisig Way, Elite Village, 2009"),
               trailing: TextButton(
                 onPressed: () {
                   Get.to(ProfileScreen());
                 },
-                child: Text("Edit"),
+                child: const Text("Edit"),
               ),
             ),
             ListTile(
