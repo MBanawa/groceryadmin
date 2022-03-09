@@ -17,6 +17,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  var _profileImage = "https://picsum.photos/id/237/200/300";
+
   final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _mobile = TextEditingController();
@@ -31,13 +33,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   readStoreDetail() {
-    _db.collection("settings").doc("store").get().then((response) {
+    _db.collection("settings").doc("store").snapshots().listen((response) {
       _name.text = response.data()!["name"];
       _email.text = response.data()!["email"];
       _mobile.text = response.data()!["mobile"];
       _address.text = response.data()!["address"];
-    }).catchError((e) {
-      print(e);
+      _profileImage = response.data()!["imageURL"];
     });
   }
 
@@ -56,9 +57,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   uploadProfileImage() async {
     var picker = ImagePicker();
-    var pickedFile = await picker.pickImage(source: ImageSource.camera);
+    var pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-    if (pickedFile!.path.isNotEmpty) {
+    if (pickedFile!.path.length != 0) {
       File image = File(pickedFile.path);
       FirebaseStorage _storage = FirebaseStorage.instance;
       _storage
@@ -69,6 +70,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
           .then((res) {
         print(res);
         res.ref.getDownloadURL().then((url) {
+          _db
+              .collection("settings")
+              .doc("store")
+              .update({"imageURL": url}).then((value) {
+            print("Updated");
+          }).catchError((e) {
+            print(e);
+          });
           print("URL:" + url);
         });
       }).catchError((e) {
@@ -103,8 +112,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onTap: () {
                   uploadProfileImage();
                 },
-                child: const CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/mike.png'),
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage(_profileImage),
                   radius: 60.0,
                 ),
               ),
