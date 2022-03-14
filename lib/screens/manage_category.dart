@@ -3,14 +3,48 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ManageCategoryScreen extends StatelessWidget {
+  bool canEdit = false;
+  var category = {};
+
+  ManageCategoryScreen({
+    Key? key,
+    required this.canEdit,
+    required this.category,
+  }) : super(key: key) {
+    if (canEdit) _titleCtrl.text = category["title"];
+  }
+
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final TextEditingController _titleCtrl = TextEditingController();
+
+  update() {
+    _db
+        .collection("categories")
+        .doc(category["id"])
+        .update({"title": _titleCtrl.text}).then((value) {
+      Get.back();
+    });
+  }
+
+  add() {
+    _db.collection("categories").add({"title": _titleCtrl.text}).then((value) {
+      Get.back();
+    }).catchError((e) {
+      print(e);
+    });
+  }
+
+  delete() {
+    _db.collection("categories").doc(category["id"]).delete().then((value) {
+      Get.back();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Manage Category"),
+        title: Text("${canEdit ? 'Edit' : 'Add'} Category"),
       ),
       body: Container(
         padding: EdgeInsets.all(32.0),
@@ -36,23 +70,30 @@ class ManageCategoryScreen extends StatelessWidget {
                   elevation: 0,
                   primary: Colors.green,
                 ),
-                child: const Text(
-                  "Save Changes",
-                  style: TextStyle(
+                child: Text(
+                  canEdit ? 'UPDATE' : 'ADD',
+                  style: const TextStyle(
                     fontSize: 16,
                   ),
                 ),
                 onPressed: () {
-                  _db
-                      .collection("categories")
-                      .add({"title": _titleCtrl.text}).then((value) {
-                    Get.back();
-                  }).catchError((e) {
-                    print(e);
-                  });
+                  canEdit ? update() : add();
                 },
               ),
             ),
+            canEdit
+                ? TextButton(
+                    onPressed: () {
+                      delete();
+                    },
+                    child: const Text(
+                      "Delete",
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  )
+                : Container(),
           ],
         ),
       ),
