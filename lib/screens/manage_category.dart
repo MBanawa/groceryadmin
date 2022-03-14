@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ManageCategoryScreen extends StatelessWidget {
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final TextEditingController _titleCtrl = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,6 +19,7 @@ class ManageCategoryScreen extends StatelessWidget {
         child: Column(
           children: [
             TextField(
+              controller: _titleCtrl,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.grey[200],
@@ -31,14 +36,20 @@ class ManageCategoryScreen extends StatelessWidget {
                   elevation: 0,
                   primary: Colors.green,
                 ),
-                child: Text(
+                child: const Text(
                   "Save Changes",
                   style: TextStyle(
                     fontSize: 16,
                   ),
                 ),
                 onPressed: () {
-                  Get.back();
+                  _db
+                      .collection("categoreis")
+                      .add({"title": _titleCtrl.text}).then((value) {
+                    Get.back();
+                  }).catchError((e) {
+                    print(e);
+                  });
                 },
               ),
             ),
