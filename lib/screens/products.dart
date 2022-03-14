@@ -3,7 +3,14 @@ import 'package:get/get.dart';
 import 'package:groceryadmin/screens/categories.dart';
 import 'package:groceryadmin/screens/manage_product.dart';
 
-class ProductsScreen extends StatelessWidget {
+class ProductsScreen extends StatefulWidget {
+  const ProductsScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ProductsScreen> createState() => _ProductsScreenState();
+}
+
+class _ProductsScreenState extends State<ProductsScreen> {
   List _products = [
     {
       "imageURL": "assets/images/products/1.jpg",
