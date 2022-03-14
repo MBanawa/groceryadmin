@@ -44,7 +44,7 @@ class ManageCategoryScreen extends StatelessWidget {
                 ),
                 onPressed: () {
                   _db
-                      .collection("categoreis")
+                      .collection("categories")
                       .add({"title": _titleCtrl.text}).then((value) {
                     Get.back();
                   }).catchError((e) {
