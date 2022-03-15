@@ -29,12 +29,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   fetchCategories() {
     _db.collection("categories").snapshots().listen((event) {
       var _tmp = [];
-      event.docs.forEach((element) {
+      for (var element in event.docs) {
         _tmp.add({
           "id": element.id,
           "title": element.data()["title"],
         });
-      });
+      }
       setState(() {
         _categories = _tmp;
       });
