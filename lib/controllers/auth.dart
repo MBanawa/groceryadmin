@@ -42,8 +42,6 @@ class AuthController extends GetxController {
   logout() {
     _auth.signOut().then((res) {
       Get.offAll(LoginScreen());
-    }).catchError((e) {
-      print(e);
-    });
+    }).catchError((e) {});
   }
 }
