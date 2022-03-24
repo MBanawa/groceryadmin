@@ -24,6 +24,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _mobile = TextEditingController();
   final TextEditingController _address = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    readStoreDetail();
+  }
+
   logout() {
     _auth.signOut().then((res) {
       Get.offAll(LoginScreen());
@@ -49,6 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       "email": _email.text,
       "name": _name.text,
     }).then((value) {
+      Get.back();
       print("Updated");
     }).catchError((e) {
       print(e);
@@ -70,6 +77,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           .then((res) {
         print(res);
         res.ref.getDownloadURL().then((url) {
+          setState(() {
+            _profileImage = url;
+          });
+
           _db
               .collection("settings")
               .doc("store")
@@ -78,6 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           }).catchError((e) {
             print(e);
           });
+
           print("URL:" + url);
         });
       }).catchError((e) {
@@ -86,13 +98,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } else {
       print("No file picked");
     }
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    readStoreDetail();
   }
 
   @override
