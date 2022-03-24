@@ -1,6 +1,7 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:groceryadmin/controllers/auth.dart';
 import 'package:groceryadmin/screens/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,7 +16,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final AuthController _auth = AuthController();
+
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   var _profileImage = "https://picsum.photos/id/237/200/300";
 
@@ -28,14 +30,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     readStoreDetail();
-  }
-
-  logout() {
-    _auth.signOut().then((res) {
-      Get.offAll(LoginScreen());
-    }).catchError((e) {
-      print(e);
-    });
   }
 
   readStoreDetail() {
@@ -187,7 +181,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 20),
               TextButton(
                 onPressed: () {
-                  logout();
+                  _auth.logout();
                   // Get.offAll(LoginScreen());
                 },
                 child: const Text("Logout"),
